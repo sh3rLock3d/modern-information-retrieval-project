@@ -1,4 +1,4 @@
-class dictionary_process:
+class DictionaryProcess:
     def __init__(self, document):
         self. document = document
         self.tokens = []
