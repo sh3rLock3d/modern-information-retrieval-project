@@ -1,4 +1,5 @@
 from functools import reduce
+from struct import pack, unpack
 
 
 class Compress:
@@ -10,7 +11,7 @@ class Compress:
         pass
 
 
-class Gamma_Code:
+class GammaCode:
     def gamma_encoder(self, postings):
         return "".join(
             [self.get_length(self.get_offset(gap)) + self.get_offset(gap) for gap in self.get_gaps_list(postings)])
@@ -50,7 +51,54 @@ class Gamma_Code:
         return res
 
 
-# if __name__ == '__main__':
-#     c = Gamma_Code()
-#     print(c.gamma_decoder(c.gamma_encoder([1, 2, 3])))
-#     # print(c.gamma_decoding(c.gamma_encoding([10, 15, 22, 23, 34, 44, 50, 58])))
+class VariableByteCode:
+    def encode_number(self, number):
+        bytes_list = []
+        while True:
+            bytes_list.insert(0, number % 128)
+            if number < 128:
+                break
+            number = number // 128
+        bytes_list[-1] += 128
+        return bytes_list
+
+    def encode(self, postings_list):
+        bytes_list = []
+        for number in self.get_gaps_list(postings_list):
+            for num in self.encode_number(number):
+                bytes_list.append(f'{num:08b}')
+        return "".join(bytes_list)
+
+    def decode(self, bytestream):
+        numbers = []
+        posting_list = []
+        for i in range(len(bytestream)//8):
+            numbers.append(bytestream[8*i:8*(i+1)])
+        count = 0
+        sum = 0
+        for i in range(len(numbers)):
+            if int(numbers[i],2) <128:
+                count += 1
+            else:
+                for j in range(count,-1,-1):
+                    if j !=0:
+                        sum +=int(numbers[i-j],2) * 128 ** (j)
+                    else:
+                        sum += int(numbers[i - j], 2) * 128 ** (j) - 128
+                posting_list.append(sum)
+                count = 0
+                sum = 0
+        for i in range(1, len(posting_list)):
+            posting_list[i] = posting_list[i] + posting_list[i - 1]
+        return posting_list
+    def get_gaps_list(self, posting_list):
+        res = [posting_list[0]]
+        for i in range(1, len(posting_list)):
+            res.append(posting_list[i] - posting_list[i - 1])
+        return res
+
+if __name__ == '__main__':
+    c = VariableByteCode()
+    print(c.decode(c.encode([824, 829, 215406])))
+    print(int("00001",2))
+    # print(c.gamma_decoding(c.gamma_encoding([10, 15, 22, 23, 34, 44, 50, 58])))
