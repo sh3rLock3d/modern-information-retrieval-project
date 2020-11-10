@@ -5,8 +5,8 @@ from prepare_text import DictionaryProcess
 class IIDictionary:
     class PostingItem:
         def __init__(self, doc_id):
-            self.doc_id = doc_id
-            self.positions = []
+            self.doc_id: int = doc_id
+            self.positions: list = []
 
     class TokenKey:
         def __init__(self, token, sub_section):
@@ -28,11 +28,69 @@ class IIDictionary:
         self.dictionary[token_key] = posting_list
 
 
-class Indexing:
+# k gram dictionary
+class KGDictionary:
+    k = 2
+
+    @classmethod
+    def get_k_grams(cls, txt: str):
+        # normal_word = txt + "$"
+        res = []
+        for i in range(len(txt)):
+            k_gram = ""
+            if cls.k + i >= len(txt):
+                k_gram = txt[i:] + txt[:(i + cls.k) % len(txt)]
+            else:
+                k_gram = txt[i: i + cls.k]
+            res.append(k_gram)
+
+        return res
 
     def __init__(self):
-        self.ted_talk = IIDictionary()
-        self.persian = IIDictionary()
+        """ ted_talk[k_gram:str] = [{word:str:set}] """
+        self.dictionary: {str: {str: set}} = {}
+
+    def merge_token_doc(self, word, doc_id):
+        for k_gram in self.get_k_grams(word):
+            posting_dict = self.dictionary.get(k_gram, {})
+            # TODO improving sort alg
+            word_doc_ids = posting_dict.get(word, set())
+            word_doc_ids.add(doc_id)
+            posting_dict[word] = word_doc_ids
+
+            # posting_dict.sort(key=lambda pi: pi.word)
+            self.dictionary[k_gram] = posting_dict
+
+
+class Indexing:
+    @classmethod
+    def reading_persian(cls):
+        import xmltodict
+        with open("data/Persian.xml") as xml_file:
+            data_dict = xmltodict.parse(xml_file.read())
+        result_wikis = []
+        for page in data_dict['mediawiki']['page']:
+            text = page['revision']['text']['#text']
+            title = page['title']
+            result_wikis.append({'id': int(page['id']), 'title': title, 'text': text})
+        return result_wikis
+
+    @classmethod
+    def reading_ted_talk(cls):
+        import pandas as pd
+        ted_talk_data = pd.read_csv('./data/ted_talks.csv')
+        result_wikis = []
+        for index, doc in enumerate(ted_talk_data[['title', 'description']].values):
+            description = doc[1]
+            title = doc[0]
+            result_wikis.append({'id': index, 'title': title, 'description': description})
+        return result_wikis
+
+    def __init__(self):
+        self.ted_talk_ii = IIDictionary()
+        self.ted_talk_kg = KGDictionary()
+        self.persian_ii = IIDictionary()
+        self.persian_kg = KGDictionary()
         self.indexing()
 
     def get_ted_talk_dictionary(self):
@@ -41,40 +99,36 @@ class Indexing:
     def get_persian_dictionary(self):
         return self.persian
 
-    @classmethod
-    def reading_ted_talk(cls):
-        import pandas as pd
-        ted_talk_data = pd.read_csv('./data/ted_talks.csv')
-        return ted_talk_data[['title', 'description']]
-
-    def indexing_single_doc(self, doc, doc_id):
+    def indexing_single_doc(self, doc, file):
+        doc_id = doc['id']
+        print('indexing doc:', doc_id, ' in ', file)
         tokens_position = {}
         for subSection in doc.keys():
+            if subSection == 'id':
+                continue
             text = doc[subSection]
             dictionary_process = DictionaryProcess(text)
             # TODO fake tokens
-            for pos, token in enumerate(['tt', 'th', 'dfgh', 'th']):
+            dictionary_process = ['tsthdrtht', 'tsthdrthh', 'dfdtggh', 'tsthdrthh']
+            for pos, token in enumerate(dictionary_process):
                 token_key = IIDictionary.TokenKey(token, subSection)
                 tokens_position[token_key.key()] = tokens_position.get(token_key.key(), []) + [pos]
         for token_key_string in tokens_position.keys():
             posting_item = IIDictionary.PostingItem(doc_id)
             posting_item.positions = tokens_position[token_key_string]
-            self.ted_talk.merge_token_doc(token_key_string, posting_item)
+            if file == "ted_talk":
+                self.ted_talk_ii.merge_token_doc(token_key_string, posting_item)
+                self.ted_talk_kg.merge_token_doc(token_key_string.split()[0], doc_id)
+            elif file == "persian_wiki":
+                self.persian_ii.merge_token_doc(token_key_string, posting_item)
+                self.persian_kg.merge_token_doc(token_key_string.split()[0], doc_id)
 
-    def indexing_ted_talk(self):
-        data = Indexing.reading_ted_talk()
-        for doc_index in range(data.shape[0]):
-            self.indexing_single_doc(data.iloc[doc_index], doc_index)
-
-    @classmethod
-    def reading_persian(cls):
-        import xmltodict
-        with open("data/Persian.xml") as xml_file:
-            data_dict = xmltodict.parse(xml_file.read())
-        pages_dict = data_dict['mediawiki']['page']
+    def indexing_data(self, data, file):
+        for doc_index in range(len(data)):
+            self.indexing_single_doc(data[doc_index], file)
 
     def indexing(self):
-        self.indexing_ted_talk()
-        self.reading_persian()
-        # for on ducument : prepare text; add to dictionary
+        self.indexing_data(self.reading_ted_talk(), 'ted_talk')
+        self.indexing_data(self.reading_persian(), 'persian_wiki')
+        print('indexing done')
         pass
