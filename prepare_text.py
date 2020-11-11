@@ -8,11 +8,23 @@ import nltk
 # nltk.download('wordnet')
 # print('done')
 
-class dictionary_process:
-    def __init__(self, document, is_persian):
+class DictionaryProcess:
+    def __init__(self, document):
+        self.persian = False
         self.document = document
         self.tokens = []
-        self.persian = is_persian
+        self.set_language()
+
+    def set_language(self):
+        ch = self.document[0]
+        if ('\u0600' <= ch <= '\u06FF' or
+                '\u0750' <= ch <= '\u077F' or
+                '\u08A0' <= ch <= '\u08FF' or
+                '\uFB50' <= ch <= '\uFDFF' or
+                '\uFE70' <= ch <= '\uFEFF' or
+                '\U00010E60' <= ch <= '\U00010E7F' or
+                '\U0001EE00' <= ch <= '\U0001EEFF'):
+            self.persian = True
 
     def normalization(self):
         if self.persian:
@@ -50,8 +62,8 @@ class dictionary_process:
             porter = nltk.PorterStemmer()
             self.tokens = [porter.stem(word) for word in self.tokens]
 
-            # lemma = nltk.WordNetLemmatizer()
-            # self.tokens = [lemma.lemmatize(word, pos="v") for word in self.tokens]
+            lemma = nltk.WordNetLemmatizer()
+            self.tokens = [lemma.lemmatize(word, pos="v") for word in self.tokens]
             # self.tokens = [lemma.lemmatize(word, pos="n") for word in self.tokens]
 
     def prepare_text(self):
@@ -60,14 +72,16 @@ class dictionary_process:
         self.delete_punctuation()
         self.stop_words()
         self.stemming()
+        return self.tokens
 
     def print(self):
         for i in self.tokens:
             print(i)
 
+
 # fa = 'اصلاح نويسه ها و استفاده از نیم‌فاصله پردازش را آسان مي كند.'
 # en = """At eight o'clock on Thursday morning
 # ... Arthur didn't feel very good."""
-# a = dictionary_process(en)
+# a = DictionaryProcess(en)
 # a.prepare_text()
 # a.print()
