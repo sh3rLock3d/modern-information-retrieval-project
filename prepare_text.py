@@ -85,6 +85,6 @@ class DictionaryProcess:
 # fa = 'اصلاح نويسه ها و استفاده از نیم‌فاصله پردازش را آسان مي كند.'
 # en = """At eight o'clock on Thursday morning
 # ... Arthur didn't feel very good."""
-# a = DictionaryProcess(en)
-# a.prepare_text()
-# a.print()
+#a = DictionaryProcess(en)
+#a.prepare_text()
+#a.print()
