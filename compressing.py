@@ -1,14 +1,4 @@
 from functools import reduce
-from indexing import KGDictionary
-
-
-class Compress:
-    def __init__(self, indexing):
-        self.indexing = indexing
-        self.compress()
-
-    def compress(self):
-        pass
 
 
 class GammaCode:
@@ -72,17 +62,17 @@ class VariableByteCode:
     def decode(self, bytestream):
         numbers = []
         posting_list = []
-        for i in range(len(bytestream)//8):
-            numbers.append(bytestream[8*i:8*(i+1)])
+        for i in range(len(bytestream) // 8):
+            numbers.append(bytestream[8 * i:8 * (i + 1)])
         count = 0
         sum = 0
         for i in range(len(numbers)):
-            if int(numbers[i],2) <128:
+            if int(numbers[i], 2) < 128:
                 count += 1
             else:
-                for j in range(count,-1,-1):
-                    if j !=0:
-                        sum +=int(numbers[i-j],2) * 128 ** (j)
+                for j in range(count, -1, -1):
+                    if j != 0:
+                        sum += int(numbers[i - j], 2) * 128 ** (j)
                     else:
                         sum += int(numbers[i - j], 2) * 128 ** (j) - 128
                 posting_list.append(sum)
@@ -91,15 +81,33 @@ class VariableByteCode:
         for i in range(1, len(posting_list)):
             posting_list[i] = posting_list[i] + posting_list[i - 1]
         return posting_list
+
     def get_gaps_list(self, posting_list):
         res = [posting_list[0]]
         for i in range(1, len(posting_list)):
             res.append(posting_list[i] - posting_list[i - 1])
         return res
 
-if __name__ == '__main__':
-    pass
-    # TODO
-    #c = VariableByteCode()
-    #print(c.decode(c.encode([824, 829, 215406])))
-    # print(c.gamma_decoding(c.gamma_encoding([10, 15, 22, 23, 34, 44, 50, 58])))
+
+class CompressUtils:
+    @classmethod
+    def compress_with_gamma(self, indexing):
+        # TODO use gamma class to compress and save indexing to a file
+        pass
+
+    @classmethod
+    def decode_with_gamma(self):
+        # TODO decode and create an indexing object from a file
+        # return indexing
+        pass
+
+    @classmethod
+    def compress_with_variable_code(self, indexing):
+        # TODO use variable code class to compress and save indexing to a file
+        pass
+
+    @classmethod
+    def decode_with_variable_code(self):
+        # TODO decode and create an indexing object from a file
+        # return indexing
+        pass

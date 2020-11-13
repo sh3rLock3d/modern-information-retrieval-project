@@ -1,14 +1,18 @@
-from SearchAnsRetrival import SearchAnsRetrival
-from compressing import Compress
 from indexing import Indexing
-from query_check import query_check
+from search_and_retrieval import SearchAndRetrieval
 
 
 def main():
+    """ reading and indexing files """
     my_index = Indexing()
-    my_compress = Compress(my_index)
-    my_query_check = query_check(my_compress)
-    SearchAnsRetrival(my_query_check)
+    my_index.update_index_from_files()
+
+    """ compressing and saving index object to a file """
+    my_index.compress_with_variable_code()
+    my_index.compress_with_variable_code()
+
+    """ getting queries """
+    SearchAndRetrieval(my_index)
 
 
 if __name__ == '__main__':

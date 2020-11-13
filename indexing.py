@@ -1,4 +1,5 @@
 # inverted index dictionary
+from compressing import CompressUtils
 from prepare_text import DictionaryProcess
 
 
@@ -85,7 +86,6 @@ class Indexing:
         self.ted_talk_kg = KGDictionary()
         self.persian_ii = IIDictionary()
         self.persian_kg = KGDictionary()
-        self.indexing()
 
     def get_ted_talk_dictionary(self):
         return self.ted_talk_ii.dictionary
@@ -120,29 +120,53 @@ class Indexing:
             self.indexing_single_doc(data[doc_index], file)
 
     def get_stop_words_set(self, dictionary):
+        stop_words = []
+
         tokens = list(dictionary.keys())
         tokens.sort(key=lambda token_key: dictionary[token_key][0])
         tokens.reverse()
-        max_freq = dictionary[tokens[0]][0]
-        max_valid_token_freq = max_freq / 5
-        stop_words = []
-        for token in tokens:
-            if dictionary[token][0] > max_valid_token_freq:
-                stop_words.append(token)
-            else:
-                break
+        try:
+            max_freq = dictionary[tokens[0]][0]
+            max_valid_token_freq = max_freq / 5
+            for token in tokens:
+                if dictionary[token][0] > max_valid_token_freq:
+                    stop_words.append(token)
+                else:
+                    break
+        except:
+            pass
         return stop_words
 
     def delete_stops_from_dict(self, dict, stops):
         for stop in stops:
             del dict[stop]
 
-    def indexing(self):
+    def update_index_from_files(self):
         self.indexing_data(self.reading_ted_talk(), 'ted_talk')
-        # self.indexing_data(self.reading_persian(), 'persian_wiki')
+        self.indexing_data(self.reading_persian(), 'persian_wiki')
         print('indexing done')
         stops1 = self.get_stop_words_set(self.ted_talk_ii.dictionary)
         stops2 = self.get_stop_words_set(self.persian_ii.dictionary)
         print("stop words:\n", "\n".join(stops1 + stops2))
         self.delete_stops_from_dict(self.ted_talk_ii.dictionary, stops1)
         self.delete_stops_from_dict(self.persian_ii.dictionary, stops2)
+
+    def update_index_with_decoding_from_gamma_file(self):
+        indexing = CompressUtils.decode_with_gamma()
+        self.persian_ii = indexing.persian_ii
+        self.persian_kg = indexing.persian_kg
+        self.ted_talk_ii = indexing.ted_talk_ii
+        self.ted_talk_kg = indexing.ted_talk_kg
+
+    def update_index_with_decoding_from_variable_file(self):
+        indexing = CompressUtils.decode_with_variable_code()
+        self.persian_ii = indexing.persian_ii
+        self.persian_kg = indexing.persian_kg
+        self.ted_talk_ii = indexing.ted_talk_ii
+        self.ted_talk_kg = indexing.ted_talk_kg
+
+    def compress_with_gamma(self):
+        CompressUtils.compress_with_gamma(self)
+
+    def compress_with_variable_code(self):
+        CompressUtils.compress_with_variable_code(self)

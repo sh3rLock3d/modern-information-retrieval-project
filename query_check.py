@@ -3,8 +3,8 @@ from prepare_text import DictionaryProcess
 
 
 class query_check:
-    def __init__(self, compress):
-        self.compress = compress
+    def __init__(self, my_index):
+        self.indexing = my_index
 
     def spell_corrector(self, query):
         modified_query = []
@@ -36,17 +36,17 @@ class query_check:
         ch = word[0]
         persian = DictionaryProcess.check_persian(ch)
         if persian:
-            return not self.compress.indexing.persian_ii.dictionary.get(word, None) is None
+            return not self.indexing.persian_ii.dictionary.get(word, None) is None
         else:
-            return not self.compress.indexing.ted_talk_ii.dictionary.get(word, None) is None
+            return not self.indexing.ted_talk_ii.dictionary.get(word, None) is None
 
     def get_k_gram_dictionary(self, k_gram):
         ch = k_gram[0]
         persian = DictionaryProcess.check_persian(ch)
         if persian:
-            return list(self.compress.indexing.persian_kg.dictionary.get(k_gram, {}).keys())
+            return list(self.indexing.persian_kg.dictionary.get(k_gram, {}).keys())
         else:
-            return list(self.compress.indexing.ted_talk_kg.dictionary.get(k_gram, {}).keys())
+            return list(self.indexing.ted_talk_kg.dictionary.get(k_gram, {}).keys())
 
     def jaccard_similarity(self, query, document):
         intersection = set(query).intersection(set(document))
