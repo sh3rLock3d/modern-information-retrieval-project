@@ -1,7 +1,7 @@
+# inverted index dictionary
 from prepare_text import DictionaryProcess
 
 
-# inverted index dictionary
 class IIDictionary:
     class PostingItem:
         def __init__(self, doc_id):
@@ -11,21 +11,25 @@ class IIDictionary:
     class TokenKey:
         def __init__(self, token, sub_section):
             self.token = token
+            self.frequency = 0
             self.sub_section = sub_section
 
         def key(self):
             return self.token + " subsection " + self.sub_section
 
+        def __hash__(self):
+            return hash(self.key())
+
     def __init__(self):
-        """ ted_talk[TokenKey] = [PostingItem list] """
+        """ ted_talk[TokenKey] = [token freq,PostingItem list] """
         self.dictionary: {IIDictionary.TokenKey: [IIDictionary.PostingItem]} = {}
 
     def merge_token_doc(self, token_key, posting_item):
-        posting_list = self.dictionary.get(token_key, [])
+        freq, posting_list = self.dictionary.get(token_key, [0, []])
         # TODO
         posting_list.append(posting_item)
         posting_list.sort(key=lambda pi: pi.doc_id)
-        self.dictionary[token_key] = posting_list
+        self.dictionary[token_key] = [freq + len(posting_item.positions), posting_list]
 
 
 # k gram dictionary
@@ -34,17 +38,7 @@ class KGDictionary:
 
     @classmethod
     def get_k_grams(cls, txt: str):
-        # normal_word = txt + "$"
-        res = []
-        for i in range(len(txt)):
-            k_gram = ""
-            if cls.k + i >= len(txt):
-                k_gram = txt[i:] + txt[:(i + cls.k) % len(txt)]
-            else:
-                k_gram = txt[i: i + cls.k]
-            res.append(k_gram)
-
-        return res
+        return [txt[i:i + cls.k] for i in range(len(txt))]
 
     def __init__(self):
         """ ted_talk[k_gram:str] = [{word:str:set}] """
@@ -107,9 +101,7 @@ class Indexing:
             if subSection == 'id':
                 continue
             text = doc[subSection]
-            dictionary_process = DictionaryProcess(text)
-            # TODO fake tokens
-            dictionary_process = ['tsthdrtht', 'tsthdrthh', 'dfdtggh', 'tsthdrthh']
+            dictionary_process = DictionaryProcess(text).prepare_text()
             for pos, token in enumerate(dictionary_process):
                 token_key = IIDictionary.TokenKey(token, subSection)
                 tokens_position[token_key.key()] = tokens_position.get(token_key.key(), []) + [pos]
@@ -127,8 +119,14 @@ class Indexing:
         for doc_index in range(len(data)):
             self.indexing_single_doc(data[doc_index], file)
 
+    def get_stop_words_set(self):
+        tokens = list(self.ted_talk_ii.dictionary.keys())
+        tokens.sort(key=lambda token_key: self.ted_talk_ii.dictionary[token_key][0])
+        print(tokens)
+
     def indexing(self):
         self.indexing_data(self.reading_ted_talk(), 'ted_talk')
-        self.indexing_data(self.reading_persian(), 'persian_wiki')
+        # self.indexing_data(self.reading_persian(), 'persian_wiki')
         print('indexing done')
+        self.get_stop_words_set()
         pass

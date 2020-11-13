@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
-import hazm
-import string
-import nltk
 
+import string
+
+import hazm
+import nltk
 
 # nltk.download('punkt')
 # nltk.download('wordnet')
 # print('done')
+
 
 class DictionaryProcess:
     def __init__(self, document):
