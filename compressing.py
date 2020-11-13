@@ -1,5 +1,5 @@
 from functools import reduce
-from struct import pack, unpack
+from indexing import KGDictionary
 
 
 class Compress:
@@ -98,7 +98,6 @@ class VariableByteCode:
         return res
 
 if __name__ == '__main__':
-    c = VariableByteCode()
-    print(c.decode(c.encode([824, 829, 215406])))
-    print(int("00001",2))
+    #c = VariableByteCode()
+    #print(c.decode(c.encode([824, 829, 215406])))
     # print(c.gamma_decoding(c.gamma_encoding([10, 15, 22, 23, 34, 44, 50, 58])))
