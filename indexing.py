@@ -16,14 +16,14 @@ class IIDictionary:
             self.sub_section = sub_section
 
         def key(self):
-            return self.token + " subsection " + self.sub_section
+            return self.token + "-" + self.sub_section
 
         def __hash__(self):
             return hash(self.key())
 
     def __init__(self):
         """ ted_talk[TokenKey] = [token freq,PostingItem list] """
-        self.dictionary: {IIDictionary.TokenKey: [IIDictionary.PostingItem]} = {}
+        self.dictionary: {IIDictionary.TokenKey: [int,[IIDictionary.PostingItem]]} = {}
 
     def merge_token_doc(self, token_key, posting_item):
         freq, posting_list = self.dictionary.get(token_key, [0, []])
@@ -42,7 +42,7 @@ class KGDictionary:
         return [txt[i:i + cls.k] for i in range(len(txt))]
 
     def __init__(self):
-        """ ted_talk[k_gram:str] = [{word:str:set}] """
+        """ ted_talk[k_gram:str] = {word:str:set} """
         self.dictionary: {str: {str: set}} = {}
 
     def merge_token_doc(self, word, doc_id):
@@ -110,10 +110,10 @@ class Indexing:
             posting_item.positions = tokens_position[token_key_string]
             if file == "ted_talk":
                 self.ted_talk_ii.merge_token_doc(token_key_string, posting_item)
-                self.ted_talk_kg.merge_token_doc(token_key_string.split()[0], doc_id)
+                self.ted_talk_kg.merge_token_doc(token_key_string.split("-")[0], doc_id)
             elif file == "persian_wiki":
                 self.persian_ii.merge_token_doc(token_key_string, posting_item)
-                self.persian_kg.merge_token_doc(token_key_string.split()[0], doc_id)
+                self.persian_kg.merge_token_doc(token_key_string.split("-")[0], doc_id)
 
     def indexing_data(self, data, file):
         for doc_index in range(len(data)):
@@ -143,7 +143,8 @@ class Indexing:
 
     def update_index_from_files(self):
         self.indexing_data(self.reading_ted_talk(), 'ted_talk')
-        self.indexing_data(self.reading_persian(), 'persian_wiki')
+        # TODO
+        # self.indexing_data(self.reading_persian(), 'persian_wiki')
         print('indexing done')
         stops1 = self.get_stop_words_set(self.ted_talk_ii.dictionary)
         stops2 = self.get_stop_words_set(self.persian_ii.dictionary)

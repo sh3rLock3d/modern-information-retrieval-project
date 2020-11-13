@@ -7,5 +7,10 @@ class SearchAndRetrieval:
         self.run()
 
     def run(self):
-        # todo create user interface
-        pass
+        while True:
+            query = input("Enter search Query: ")
+            sub_section = input("Enter a subsection:")
+
+            modified_query = self.my_query_check.spell_corrector(query, sub_section)
+            print("Suggestion:", modified_query)
+
