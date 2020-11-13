@@ -119,14 +119,30 @@ class Indexing:
         for doc_index in range(len(data)):
             self.indexing_single_doc(data[doc_index], file)
 
-    def get_stop_words_set(self):
-        tokens = list(self.ted_talk_ii.dictionary.keys())
-        tokens.sort(key=lambda token_key: self.ted_talk_ii.dictionary[token_key][0])
-        print(tokens)
+    def get_stop_words_set(self, dictionary):
+        tokens = list(dictionary.keys())
+        tokens.sort(key=lambda token_key: dictionary[token_key][0])
+        tokens.reverse()
+        max_freq = dictionary[tokens[0]][0]
+        max_valid_token_freq = max_freq / 5
+        stop_words = []
+        for token in tokens:
+            if dictionary[token][0] > max_valid_token_freq:
+                stop_words.append(token)
+            else:
+                break
+        return stop_words
+
+    def delete_stops_from_dict(self, dict, stops):
+        for stop in stops:
+            del dict[stop]
 
     def indexing(self):
         self.indexing_data(self.reading_ted_talk(), 'ted_talk')
         # self.indexing_data(self.reading_persian(), 'persian_wiki')
         print('indexing done')
-        self.get_stop_words_set()
-        pass
+        stops1 = self.get_stop_words_set(self.ted_talk_ii.dictionary)
+        stops2 = self.get_stop_words_set(self.persian_ii.dictionary)
+        print("stop words:\n", "\n".join(stops1 + stops2))
+        self.delete_stops_from_dict(self.ted_talk_ii.dictionary, stops1)
+        self.delete_stops_from_dict(self.persian_ii.dictionary, stops2)
