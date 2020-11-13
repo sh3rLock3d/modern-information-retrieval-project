@@ -5,6 +5,7 @@ import string
 import hazm
 import nltk
 
+
 # nltk.download('punkt')
 # nltk.download('wordnet')
 # print('done')
@@ -19,6 +20,10 @@ class DictionaryProcess:
 
     def set_language(self):
         ch = self.document[0]
+        self.persian = self.check_persian(ch)
+
+    @classmethod
+    def check_persian(cls, ch):
         if ('\u0600' <= ch <= '\u06FF' or
                 '\u0750' <= ch <= '\u077F' or
                 '\u08A0' <= ch <= '\u08FF' or
@@ -26,7 +31,8 @@ class DictionaryProcess:
                 '\uFE70' <= ch <= '\uFEFF' or
                 '\U00010E60' <= ch <= '\U00010E7F' or
                 '\U0001EE00' <= ch <= '\U0001EEFF'):
-            self.persian = True
+            return True
+        return False
 
     def normalization(self):
         if self.persian:

@@ -98,6 +98,8 @@ class VariableByteCode:
         return res
 
 if __name__ == '__main__':
+    pass
+    # TODO
     #c = VariableByteCode()
     #print(c.decode(c.encode([824, 829, 215406])))
     # print(c.gamma_decoding(c.gamma_encoding([10, 15, 22, 23, 34, 44, 50, 58])))

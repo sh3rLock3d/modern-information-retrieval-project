@@ -88,10 +88,10 @@ class Indexing:
         self.indexing()
 
     def get_ted_talk_dictionary(self):
-        return self.ted_talk
+        return self.ted_talk_ii.dictionary
 
     def get_persian_dictionary(self):
-        return self.persian
+        return self.persian_ii.dictionary
 
     def indexing_single_doc(self, doc, file):
         doc_id = doc['id']
