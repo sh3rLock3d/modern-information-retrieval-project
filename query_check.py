@@ -20,17 +20,24 @@ class query_check:
         if self.check_query_is_misspelled(word, sub_section):
             for k_gram in KGDictionary.get_k_grams(word):
                 k_gram_dictionary_list.append(self.get_k_gram_dictionary(k_gram))
-
+            best_set = set()
+            best_value = 0
             for i in range(len(k_gram_dictionary_list) - 1):
-                if self.jaccard_similarity(k_gram_dictionary_list[i], k_gram_dictionary_list[i + 1]) > 0.05:
+                score = self.jaccard_similarity(k_gram_dictionary_list[i], k_gram_dictionary_list[i + 1])
+                if score > 0.07:
                     selected_k_gram_dictionary.append(set(k_gram_dictionary_list[i]))
-
-            intersection = set.intersection(*selected_k_gram_dictionary)
+                else:
+                    if best_value < score:
+                        best_set = set(k_gram_dictionary_list[i])
+            if len(selected_k_gram_dictionary) == 0:
+                intersection = best_set
+            else:
+                intersection = set.intersection(*selected_k_gram_dictionary)
             word_min = ("", float('inf'))
             for selected_word in intersection:
-                editDistance_value = self.editDistance(selected_word, word, len(selected_word), len(word))
-                if editDistance_value < word_min[1]:
-                    word_min = selected_word, editDistance_value
+                edit_distance_value = self.editDistance(selected_word, word, len(selected_word), len(word))
+                if edit_distance_value < word_min[1]:
+                    word_min = selected_word, edit_distance_value
             return word_min[0]
         else:
             return word

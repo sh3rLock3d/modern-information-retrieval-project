@@ -1,1 +1,6 @@
 ./.idea
+ ./__pycache__/compressing.cpython-38.pyc
+ ./__pycache__/indexing.cpython-38.pyc
+ ./__pycache__/prepare_text.cpython-38.pyc
+ ./__pycache__/query_check.cpython-38.pyc
+ ./__pycache__/search_and_retrieval.cpython-38.pyc
