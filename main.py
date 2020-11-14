@@ -1,7 +1,7 @@
 from indexing import Indexing
 from search_and_retrieval import SearchAndRetrieval
 from prepare_text import DictionaryProcess
-
+from compressing import CompressUtils
 
 def main():
     """ reading and indexing files """
@@ -66,7 +66,7 @@ def user_interface(my_indexing, search):
                     # todo
                     pass
                 if l == '3':
-                    # todo
+                    CompressUtils.compress_with_gamma(my_indexing)
                     pass
             if command == '4':
                 l = input('1: showing corrected query\n2: calculate jacard of two words\n3:calculate edit distance of two words\n')
