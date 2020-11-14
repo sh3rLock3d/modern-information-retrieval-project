@@ -101,8 +101,8 @@ class CompressUtils:
             postings = [indexing.ted_talk_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
             positions = [indexing.ted_talk_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
             for position in positions:
-                position_list.append(int(G.gamma_encoder(position),2).to_bytes(math.cell(len(G.gamma_encoder(position)) / 8,sys.byteorder))
-            gamma_list.append(int(G.gamma_encoder(postings),2).to_bytes(math.cell(len(G.gamma_encoder(postings)) / 8,sys.byteorder))
+                position_list.append(int(G.gamma_encoder(position),2).to_bytes(math.cell(len(G.gamma_encoder(position)) / 8,sys.byteorder)))
+            gamma_list.append(int(G.gamma_encoder(postings),2).to_bytes(math.cell(len(G.gamma_encoder(postings)) / 8,sys.byteorder)))
         gamma_file_ii = open('gamma_code_ii', 'ab')
         pickle.dump(tuple(position_list,gamma_list),gamma_file_ii)
         gamma_file_ii.close()
@@ -116,18 +116,18 @@ class CompressUtils:
         gamma_file_ii = open('gamma_code_ii', 'rb')      
         gamma_position_list,gamma_list = pickle.load(gamma_file_ii)
         gamma_file_ii.close()
-		posting_list = []
         position_list = []
         for posting in gamma_list:
-            posting_list.append(G.gamma_decoder(str(format(int.from_bytes(posting,sys.byteorder),'b')))
+            posting_list.append(G.gamma_decoder(str(format(int.from_bytes(posting,sys.byteorder),'b'))))
         for position in gamma_position_list:
-            posting_list.append(G.gamma_decoder(str(format(int.from_bytes(position,sys.byteorder),'b')))
+            posting_list.append(G.gamma_decoder(str(format(int.from_bytes(position,sys.byteorder),'b'))))
         for i in range(len(keys)):
-        postingItem_list=[]
+            postingItem_list = []
             for j in len(posting_list[i]):
                 posting_item = PostingItem(posting_list[i][j])
                 posting_item.positions = position_list[i][j]
-            my_index.ted_talk_ii.dictionay[keys[i]] = [doc_freq[i],posting_item]
+                my_index.ted_talk_ii.dictionay[keys[i]] = [doc_freq[i], posting_item]
+
         gamma_file_kg = open('gamma_code_kg', 'rb') 
         ted_talk_kg_dictionary = pickle.load(gamma_file_kg)
         my_index.ted_talk_ii.dictionay = ted_talk_kg_dictionary
