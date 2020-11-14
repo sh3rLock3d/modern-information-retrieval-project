@@ -9,8 +9,8 @@ def main():
     my_index.update_index_from_files()
 
     """ compressing and saving index object to a file """
-    my_index.compress_with_variable_code()
-    my_index.compress_with_variable_code()
+    #my_index.compress_with_variable_code()
+    #my_index.compress_with_variable_code()
 
     """ getting queries """
     search_and_retrieval = SearchAndRetrieval(my_index)
@@ -67,6 +67,10 @@ def user_interface(my_indexing, search):
                     pass
                 if l == '3':
                     CompressUtils.compress_with_gamma(my_indexing)
+                    token_freq = []
+                    for key in my_indexing.ted_talk_ii.dictionary.keys():
+                        token_freq.append(my_indexing.ted_talk_ii.dictionary.get(key)[0])
+                    CompressUtils.decode_with_gamma(my_indexing.ted_talk_ii.dictionary.keys(),token_freq)
                     pass
             if command == '4':
                 l = input('1: showing corrected query\n2: calculate jacard of two words\n3:calculate edit distance of two words\n')

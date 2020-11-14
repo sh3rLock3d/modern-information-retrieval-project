@@ -1,5 +1,4 @@
 # inverted index dictionary
-from compressing import CompressUtils
 from prepare_text import DictionaryProcess
 
 
@@ -171,9 +170,3 @@ class Indexing:
         self.persian_kg = indexing.persian_kg
         self.ted_talk_ii = indexing.ted_talk_ii
         self.ted_talk_kg = indexing.ted_talk_kg
-
-    def compress_with_gamma(self):
-        CompressUtils.compress_with_gamma(self)
-
-    def compress_with_variable_code(self):
-        CompressUtils.compress_with_variable_code(self)

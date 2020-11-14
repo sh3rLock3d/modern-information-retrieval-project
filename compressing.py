@@ -1,8 +1,9 @@
+from indexing import Indexing
 from functools import reduce
-import indexing
 import math
 import pickle
 import sys
+
 
 class GammaCode:
     def gamma_encoder(self, postings):
@@ -113,11 +114,12 @@ class CompressUtils:
     @classmethod
     def decode_with_gamma(self,keys,doc_freq):
         G = GammaCode()
-        my_index = indexing()
+        my_index = Indexing()
         gamma_file_ii = open('gamma_code_ii', 'rb')      
         gamma_position_list,gamma_list = pickle.load(gamma_file_ii)
         gamma_file_ii.close()
         position_list = []
+        posting_list = []
         for posting in gamma_list:
             posting_list.append(G.gamma_decoder(str(format(int.from_bytes(posting,sys.byteorder),'b'))))
         for position in gamma_position_list:
@@ -125,7 +127,7 @@ class CompressUtils:
         for i in range(len(keys)):
             postingItem_list = []
             for j in len(posting_list[i]):
-                posting_item = PostingItem(posting_list[i][j])
+                posting_item = indexing.IIDictionary.PostingItem(posting_list[i][j])
                 posting_item.positions = position_list[i][j]
                 my_index.ted_talk_ii.dictionay[keys[i]] = [doc_freq[i], posting_item]
 
