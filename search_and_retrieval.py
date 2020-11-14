@@ -9,11 +9,10 @@ class SearchAndRetrieval:
         self.run()
 
     def run(self):
-        while True:
-            query = input("Enter search Query:")
-            sub_section = input("Enter a subsection:")
+        query = input("Enter search Query:")
+        sub_section = input("Enter a subsection:")
 
-            modified_query = self.my_query_check.spell_corrector(query, sub_section)
-            print("Suggestion:", modified_query)
-            results = self.lnc_ltc.get_query_results(modified_query, sub_section)
-            print("Result Docs:\n", ", ".join([str(i) for i in results]))
+        modified_query = self.my_query_check.spell_corrector(query, sub_section)
+        print("Suggestion:", modified_query)
+        results = self.lnc_ltc.get_query_results(modified_query)
+        print("Result Docs:\n", ", ".join([str(i) for i in results]))
