@@ -23,7 +23,7 @@ class IIDictionary:
 
     def __init__(self):
         """ ted_talk[TokenKey] = [token freq,PostingItem list] """
-        self.dictionary: {IIDictionary.TokenKey: [int,[IIDictionary.PostingItem]]} = {}
+        self.dictionary: {IIDictionary.TokenKey: [int, [IIDictionary.PostingItem]]} = {}
 
     def merge_token_doc(self, token_key, posting_item):
         freq, posting_list = self.dictionary.get(token_key, [0, []])
@@ -83,8 +83,10 @@ class Indexing:
 
     def __init__(self):
         self.ted_talk_ii = IIDictionary()
+        self.ted_talk_doc_ids = set()
         self.ted_talk_kg = KGDictionary()
         self.persian_ii = IIDictionary()
+        self.persian_doc_ids = set()
         self.persian_kg = KGDictionary()
 
     def get_ted_talk_dictionary(self):
@@ -95,6 +97,10 @@ class Indexing:
 
     def indexing_single_doc(self, doc, file):
         doc_id = doc['id']
+        if file == "ted_talk":
+            self.ted_talk_doc_ids.add(doc_id)
+        elif file == "persian_wiki":
+            self.persian_doc_ids.add(doc_id)
         print('indexing doc:', doc_id, ' in ', file)
         tokens_position = {}
         for subSection in doc.keys():

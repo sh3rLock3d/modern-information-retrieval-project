@@ -15,5 +15,5 @@ class SearchAndRetrieval:
 
             modified_query = self.my_query_check.spell_corrector(query, sub_section)
             print("Suggestion:", modified_query)
-            results = self.lnc_ltc.get_query_results(modified_query)
+            results = self.lnc_ltc.get_query_results(modified_query, sub_section)
             print("Result Docs:\n", ", ".join([str(i) for i in results]))
