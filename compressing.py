@@ -99,15 +99,20 @@ class CompressUtils:
         G = GammaCode()	
         gamma_list = []
         position_list = []
+        postings_list = []
         for key in indexing.ted_talk_ii.dictionary.keys():
             postings = [indexing.ted_talk_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
             positions = [indexing.ted_talk_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
             for position in positions:
                 position_list.append(int(G.gamma_encoder(position),2).to_bytes(math.ceil(len(G.gamma_encoder(position)) / 8),sys.byteorder))
             gamma_list.append(int(G.gamma_encoder(postings),2).to_bytes(math.ceil(len(G.gamma_encoder(postings)) / 8),sys.byteorder))
+            postings_list.append(postings)
         gamma_file_ii = open('gamma_code_ii', 'ab')
+        file_ii = open('file_ii_without_compressing', 'ab')
         pickle.dump((position_list,gamma_list),gamma_file_ii)
+        pickle.dump((position_list,postings_list),file_ii)
         gamma_file_ii.close()
+        file_ii.close()
         gamma_file_kg = open('gamma_code_kg', 'ab')
         pickle.dump(indexing.ted_talk_kg.dictionary,gamma_file_kg)
         gamma_file_kg.close()

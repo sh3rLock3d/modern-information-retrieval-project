@@ -67,10 +67,10 @@ def user_interface(my_indexing, search):
                     pass
                 if l == '3':
                     CompressUtils.compress_with_gamma(my_indexing)
-                    token_freq = []
-                    for key in my_indexing.ted_talk_ii.dictionary.keys():
-                        token_freq.append(my_indexing.ted_talk_ii.dictionary.get(key)[0])
-                    CompressUtils.decode_with_gamma(my_indexing.ted_talk_ii.dictionary.keys(),token_freq)
+                    #token_freq = []
+                    #for key in my_indexing.ted_talk_ii.dictionary.keys():
+                        #token_freq.append(my_indexing.ted_talk_ii.dictionary.get(key)[0])
+                    #CompressUtils.decode_with_gamma(my_indexing.ted_talk_ii.dictionary.keys(),token_freq)
                     pass
             if command == '4':
                 l = input('1: showing corrected query\n2: calculate jacard of two words\n3:calculate edit distance of two words\n')
