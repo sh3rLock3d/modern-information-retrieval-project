@@ -2,6 +2,7 @@ from compressing import CompressUtils
 from indexing import Indexing
 from prepare_text import DictionaryProcess
 from search_and_retrieval import SearchAndRetrieval
+from query_check import query_check
 
 
 def main():
@@ -12,15 +13,16 @@ def main():
     """ compressing and saving index object to a file """
     # my_index.compress_with_variable_code()
     # my_index.compress_with_variable_code()
-
+    """ modifing query """
+    check_query = query_check(my_index)
     """ getting queries """
     search_and_retrieval = SearchAndRetrieval(my_index)
 
     """ user interface """
-    user_interface(my_index, search_and_retrieval)
+    user_interface(my_index, search_and_retrieval,check_query)
 
 
-def user_interface(my_indexing, search):
+def user_interface(my_indexing, search,check_query):
     def showing_posting_list_of_a_word(word, sub_section):
         if DictionaryProcess.check_persian(word[0]):
             postings = my_indexing.persian_ii.dictionary.get(word + "-" + sub_section, [0, []])
@@ -63,8 +65,10 @@ def user_interface(my_indexing, search):
                     result = DictionaryProcess(text).prepare_text()
                     print(result)
                 if l == '2':
-                    # todo namayeshe loghate por tekrar
-                    pass
+                    print("ted_talk:")
+                    print(my_indexing.get_stop_words_set(my_indexing.ted_talk_ii.dictionary))
+                    print("persian:")
+                    print(my_indexing.get_stop_words_set(my_indexing.persian_ii.dictionary))
             if command == '2':
                 l = input(
                     '2: showing post_list of a word\n3: showing index of a word in every doc\n4:showing every word that contains a specific bigram\n')
@@ -93,15 +97,15 @@ def user_interface(my_indexing, search):
                 l = input(
                     '1: showing corrected query\n2: calculate jacard of two words\n3:calculate edit distance of two words\n')
                 if l == '1':
-                    res = search.my_query_check.spell_corrector(input('query: '), input('subsection: '))
+                    res = check_query.spell_corrector(input('query: '), input('subsection: '))
                     print(res)
                 if l == '2':
-                    # todo jacard of two words
+                    print(check_query.jaccard_similarity(input("first word: ") , input("second word: ")))
                     pass
                 if l == '3':
                     selected_word = input('selected_word: ')
                     word = input('word: ')
-                    edit_distance_value = search.my_query_check.editDistance(selected_word, word, len(selected_word),
+                    edit_distance_value = check_query.editDistance(selected_word, word, len(selected_word),
                                                                              len(word))
                     print(edit_distance_value)
             if command == '5':
