@@ -8,6 +8,12 @@ class IIDictionary:
             self.doc_id: int = doc_id
             self.positions: list = []
 
+        def __str__(self):
+            res = "# doc_id " + str(self.doc_id) + "-> "
+            for pos in self.positions:
+                res += " " + str(pos)
+            return res
+
     class TokenKey:
         def __init__(self, token, sub_section):
             self.token = token
