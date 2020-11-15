@@ -142,6 +142,70 @@ class CompressUtils:
         return my_index
 
     @classmethod
+    def calculate_size_of_gamma(self,indexing):
+        G = GammaCode()	
+        gamma_list = []
+        postings_list = []
+        position_list = []
+        gamma_size = 0
+        size_without_compressing = 0
+        for key in indexing.ted_talk_ii.dictionary.keys():
+            postings = [indexing.ted_talk_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
+            gamma_list.append(G.gamma_encoder(postings))
+            positions = [indexing.ted_talk_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
+            for position in positions:
+                position_list.append(G.gamma_encoder(position))
+                postings_list.append(position)
+            postings_list.append(postings)
+        for key in indexing.persian_ii.dictionary.keys():
+            postings = [indexing.persian_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.persian_ii.dictionary.get(key)[1]))]
+            gamma_list.append(G.gamma_encoder(postings))
+            positions = [indexing.persian_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.persian_ii.dictionary.get(key)[1]))]
+            for position in positions:
+                position_list.append(G.gamma_encoder(position))
+                postings_list.append(position)
+            postings_list.append(postings)
+        for gamma in gamma_list:
+             gamma_size += len(gamma)
+        for gamma in position_list:
+             gamma_size += len(gamma)
+        for posting in postings_list:
+             size_without_compressing += len(posting) * 32
+        return gamma_size/8, size_without_compressing/8
+    @classmethod
+    def calculate_size_of_VBC(self,indexing):
+        VB = VariableByteCode()	
+        VB_list = []
+        postings_list = []
+        position_list = []
+        VB_size = 0
+        size_without_compressing = 0
+        for key in indexing.ted_talk_ii.dictionary.keys():
+            postings = [indexing.ted_talk_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
+            VB_list.append(VB.encode(postings))
+            positions = [indexing.ted_talk_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.ted_talk_ii.dictionary.get(key)[1]))]
+            for position in positions:
+                position_list.append(VB.encode(position))
+                postings_list.append(position)
+            postings_list.append(postings)
+        for key in indexing.persian_ii.dictionary.keys():
+            postings = [indexing.persian_ii.dictionary.get(key)[1][i].doc_id for i in range(len(indexing.persian_ii.dictionary.get(key)[1]))]
+            VB_list.append(VB.encode(postings))
+            positions = [indexing.persian_ii.dictionary.get(key)[1][i].positions for i in range(len(indexing.persian_ii.dictionary.get(key)[1]))]
+            for position in positions:
+                position_list.append(VB.encode(position))
+                postings_list.append(position)
+            postings_list.append(postings)
+        for VBC in VB_list:
+             VB_size += len(VBC)
+        for VBC in position_list:
+             VB_size += len(VBC)
+        for posting in postings_list:
+             size_without_compressing += len(posting) * 32
+        return VB_size/8, size_without_compressing/8
+
+
+    @classmethod
     def compress_with_variable_code(self, indexing):
         # TODO use variable code class to compress and save indexing to a file
         pass

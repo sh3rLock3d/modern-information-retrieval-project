@@ -19,10 +19,10 @@ class LNC_LTC:
         score_values.reverse()
         result = []
         for score in score_values:
-            result += result_dict_score[score]
-            if len(result) >= 10:
-                break
-        return result
+            for doc in result_dict_score[score]:
+                result.append(doc)
+                if len(result) >= 10:
+                    return result
 
     def get_token_raw_tf_and_postings(self, token, sub_section):
         if DictionaryProcess.check_persian(token[0]):

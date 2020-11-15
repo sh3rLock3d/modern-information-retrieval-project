@@ -57,7 +57,6 @@ class query_check:
             return list(self.indexing.persian_kg.dictionary.get(k_gram, {}).keys())
         else:
             return list(self.indexing.ted_talk_kg.dictionary.get(k_gram, {}).keys())
-    @classmethod
     def jaccard_similarity(cls, query, document):
         intersection = set(query).intersection(set(document))
         union = set(query).union(set(document))

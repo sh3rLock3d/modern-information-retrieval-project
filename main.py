@@ -81,13 +81,16 @@ def user_interface(my_indexing, search,check_query):
             if command == '3':
                 l = input('1: storage variable bytes\n2: storage gamma code\n3:store in file\n')
                 if l == '1':
-                    # todo
-                    pass
+                    VB_size,size_without_compressing = CompressUtils.calculate_size_of_VBC(my_indexing)
+                    print("size without compressing: " + str(size_without_compressing))
+                    print("size after applying variable byye code: " + str(VB_size))
                 if l == '2':
-                    # todo
-                    pass
+                    gamma_size,size_without_compressing = CompressUtils.calculate_size_of_gamma(my_indexing)
+                    print("size without compressing: " + str(size_without_compressing))
+                    print("size after applying gamma code: " + str(gamma_size))
+                    
                 if l == '3':
-                    CompressUtils.compress_with_gamma(my_indexing)
+                    #CompressUtils.compress_with_gamma(my_indexing)
                     # token_freq = []
                     # for key in my_indexing.ted_talk_ii.dictionary.keys():
                     # token_freq.append(my_indexing.ted_talk_ii.dictionary.get(key)[0])

@@ -154,8 +154,7 @@ class Indexing:
 
     def update_index_from_files(self):
         self.indexing_data(self.reading_ted_talk(), 'ted_talk')
-        # TODO
-        #self.indexing_data(self.reading_persian(), 'persian_wiki')
+        self.indexing_data(self.reading_persian(), 'persian_wiki')
         print('indexing done')
         stops1 = self.get_stop_words_set(self.ted_talk_ii.dictionary)
         stops2 = self.get_stop_words_set(self.persian_ii.dictionary)
