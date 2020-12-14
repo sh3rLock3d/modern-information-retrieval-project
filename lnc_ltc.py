@@ -85,7 +85,7 @@ class LNC_LTC:
         else:
             N = len(self.index.ted_talk_doc_ids)
         for key in ltc.keys():
-            ltc[key] = ltc[key] * math.log(N / len(tokens_df.get(key,set([1]))))
+            ltc[key] = ltc[key] * math.log(N / len(tokens_df.get(key, set([1]))))
         """ norm part """
         ltc_weight = (self.dot_product(ltc, ltc)) ** 0.5
         for key in ltc.keys():
@@ -96,5 +96,5 @@ class LNC_LTC:
     def dot_product(cls, lnc_dict: dict, ltc_dict: dict):
         res = 0
         for key in lnc_dict.keys():
-            res += lnc_dict.get(key,0) * ltc_dict.get(key,0)
+            res += lnc_dict.get(key, 0) * ltc_dict.get(key, 0)
         return res

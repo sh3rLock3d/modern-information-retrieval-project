@@ -66,7 +66,7 @@ class Indexing:
     @classmethod
     def reading_persian(cls):
         import xmltodict
-        with open("data/Persian.xml") as xml_file:
+        with open("phase1_data/Persian.xml") as xml_file:
             data_dict = xmltodict.parse(xml_file.read())
         result_wikis = []
         for page in data_dict['mediawiki']['page']:
@@ -78,7 +78,7 @@ class Indexing:
     @classmethod
     def reading_ted_talk(cls):
         import pandas as pd
-        ted_talk_data = pd.read_csv('./data/ted_talks.csv')
+        ted_talk_data = pd.read_csv('phase1_data/ted_talks.csv')
         result_wikis = []
         for index, doc in enumerate(ted_talk_data[['title', 'description']].values):
             description = doc[1]
