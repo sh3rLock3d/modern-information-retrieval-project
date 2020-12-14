@@ -1,5 +1,6 @@
 # inverted index dictionary
-from prepare_text import DictionaryProcess
+from .compressing import CompressUtils
+from .prepare_text import DictionaryProcess
 
 
 class IIDictionary:
