@@ -3,7 +3,7 @@ from phase2.classification.KNN import KNN
 
 def read_train_data():
     import pandas as pd
-    ted_talk_data = pd.read_csv('phase2/phase2_data/train.csv')
+    ted_talk_data = pd.read_csv('phase2_data/train.csv')
     result_wikis = []
     for index, doc in enumerate(ted_talk_data[['title', 'description', 'view']].values):
         title = doc[0]
@@ -15,7 +15,7 @@ def read_train_data():
 
 def read_test_data():
     import pandas as pd
-    ted_talk_data = pd.read_csv('phase2/phase2_data/test.csv')
+    ted_talk_data = pd.read_csv('phase2_data/test.csv')
     result_wikis = []
     for index, doc in enumerate(ted_talk_data[['title', 'description', 'view']].values):
         title = doc[0]
@@ -26,9 +26,10 @@ def read_test_data():
 
 
 if __name__ == '__main__':
+    pass
     # TODO this main2.py file may merge later with main.py file to be used in indexing or ...
-    train_data = read_train_data()
-    test_data = read_test_data()
-    nn_1 = KNN(1, train_data)
-    nn_5 = KNN(5, train_data)
-    nn_9 = KNN(9, train_data)
+    # train_data = read_train_data()
+    # test_data = read_test_data()
+    # nn_1 = KNN(1, train_data)
+    # nn_5 = KNN(5, train_data)
+    # nn_9 = KNN(9, train_data)
