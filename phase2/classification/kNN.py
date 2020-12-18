@@ -7,7 +7,7 @@ class KNN:
     def predict(self, doc_vector, doc):
         score_list = []
         for index, train_vector in enumerate(self.training_data_vector):
-            score = self.dot_product(train_vector, doc_vector)
+            score = self.distance(train_vector, doc_vector)
             if len(score_list) < self.k:
                 score_list.append([score, index])
             else:
@@ -20,9 +20,9 @@ class KNN:
         for score, index in score_list:
             predicted_doc = self.documents[index]
             result_dictionary[predicted_doc['views']] = result_dictionary.get(predicted_doc['views'], 0) + 1
-        max_value = max(result_dictionary.values())
+        min_value = min(result_dictionary.values())
         for key in result_dictionary.keys():
-            if result_dictionary[key] == max_value:
+            if result_dictionary[key] == min_value:
                 return key
         return None
 
