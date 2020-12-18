@@ -35,14 +35,20 @@ class VectorSpaceConverter:
                 dictionary_process = self.delete_stop_words(dictionary_process)
                 for token in dictionary_process:
                     main_token = token + "-" + subSection
-                    index = words.index(main_token)
+                    try:
+                        index = words.index(main_token)
+                    except ValueError:
+                        index = -1
                     if index != -1:
                         doc_tokens_count[main_token] = doc_tokens_count.get(main_token, 0) + 1
                         doc_vector[index] = math.log(len(self.json_document) / len(self.tokens[main_token]))
                 """ tf part """
                 for token in dictionary_process:
                     main_token = token + "-" + subSection
-                    index = words.index(main_token)
+                    try:
+                        index = words.index(main_token)
+                    except ValueError:
+                        index = -1
                     if index != -1:
                         doc_vector[index] *= doc_tokens_count.get(main_token, 0)
 

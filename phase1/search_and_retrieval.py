@@ -11,8 +11,9 @@ class SearchAndRetrieval:
     def run(self):
         query = input("Enter search Query:")
         sub_section = input("Enter a subsection:")
+        doc_class = int(input("Enter Document class views (1/-1):"))
 
         modified_query = self.my_query_check.spell_corrector(query, sub_section)
         print("Suggestion:", modified_query)
-        results = self.lnc_ltc.get_query_results(modified_query, sub_section)
+        results = self.lnc_ltc.get_query_results(modified_query, sub_section, doc_class)
         print("Result Docs:\n", ", ".join([str(i) for i in results]))

@@ -5,24 +5,24 @@ class KNN:
         self.training_data_vector = training_data_vector
 
     def predict(self, doc_vector, doc):
-        score_list = []
+        distance_list = []
         for index, train_vector in enumerate(self.training_data_vector):
-            score = self.distance(train_vector, doc_vector)
-            if len(score_list) < self.k:
-                score_list.append([score, index])
+            distance = self.distance(train_vector, doc_vector)
+            if len(distance_list) < self.k:
+                distance_list.append([distance, index])
             else:
-                score_list.sort()
-                min_score = score_list[0][0]
-                if score > min_score:
-                    del score_list[0]
-                    score_list.append([score, index])
+                distance_list.sort()
+                max_distance = distance_list[self.k-1][0]
+                if distance < max_distance:
+                    del distance_list[self.k-1]
+                    distance_list.append([distance, index])
         result_dictionary = {}
-        for score, index in score_list:
+        for distance, index in distance_list:
             predicted_doc = self.documents[index]
             result_dictionary[predicted_doc['views']] = result_dictionary.get(predicted_doc['views'], 0) + 1
-        min_value = min(result_dictionary.values())
+        max_value = max(result_dictionary.values())
         for key in result_dictionary.keys():
-            if result_dictionary[key] == min_value:
+            if result_dictionary[key] == max_value:
                 return key
         return None
 

@@ -6,14 +6,15 @@ class LNC_LTC:
     def __init__(self, my_index):
         self.index: Indexing = my_index
 
-    def get_query_results(self, query, sub_section):
+    def get_query_results(self, query, sub_section, doc_class):
         result_dict_score = {}
         docs_tokens, query_tokens_norm, tokens_raw_tf, tokens_raw_df = self.get_query_data(query, sub_section)
         query_vector_data = self._get_tokens_ltc(query_tokens_norm, tokens_raw_df)
         for doc_id in docs_tokens.keys():
-            doc_vector_data = self._get_token_tokens_lnc(docs_tokens[doc_id], query_tokens_norm)
-            score = self.dot_product(query_vector_data, doc_vector_data)
-            result_dict_score[score] = result_dict_score.get(score, []) + [doc_id]
+            if self.get_doc_class_with_id_and_query(query,doc_id) == doc_class:
+                doc_vector_data = self._get_token_tokens_lnc(docs_tokens[doc_id], query_tokens_norm)
+                score = self.dot_product(query_vector_data, doc_vector_data)
+                result_dict_score[score] = result_dict_score.get(score, []) + [doc_id]
         score_values = list(result_dict_score.keys())
         score_values.sort()
         score_values.reverse()
@@ -23,6 +24,7 @@ class LNC_LTC:
                 result.append(doc)
                 if len(result) >= 10:
                     return result
+        return result
 
     def get_token_raw_tf_and_postings(self, token, sub_section):
         if DictionaryProcess.check_persian(token[0]):
@@ -30,6 +32,12 @@ class LNC_LTC:
         else:
             raw_tf, posting = self.index.ted_talk_ii.dictionary.get(token + "-" + sub_section, [0, []])
         return raw_tf, posting
+
+    def get_doc_class_with_id_and_query(self, query, doc_id):
+        if DictionaryProcess.check_persian(query[0]):
+            return self.index.persian_doc_class.get(doc_id, None)
+        else:
+            return self.index.ted_talk_doc_class.get(doc_id, None)
 
     def get_query_data(self, query, sub_section):
         docs_tokens = {}

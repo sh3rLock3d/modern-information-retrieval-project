@@ -1,4 +1,4 @@
-from phase1.indexing import Indexing
+from phase1.indexing import Indexing , IIDictionary
 from functools import reduce
 import math
 import pickle
@@ -96,7 +96,7 @@ class VariableByteCode:
 class CompressUtils:
     @classmethod
     def compress_with_gamma(self, indexing):
-        G = GammaCode()	
+        G = GammaCode()
         gamma_list = []
         position_list = []
         postings_list = []
@@ -120,7 +120,7 @@ class CompressUtils:
     def decode_with_gamma(self,keys,doc_freq):
         G = GammaCode()
         my_index = Indexing()
-        gamma_file_ii = open('gamma_code_ii', 'rb')      
+        gamma_file_ii = open('gamma_code_ii', 'rb')
         gamma_position_list,gamma_list = pickle.load(gamma_file_ii)
         gamma_file_ii.close()
         position_list = []
@@ -132,18 +132,18 @@ class CompressUtils:
         for i in range(len(keys)):
             postingItem_list = []
             for j in len(posting_list[i]):
-                posting_item = indexing.IIDictionary.PostingItem(posting_list[i][j])
+                posting_item = IIDictionary.PostingItem(posting_list[i][j])
                 posting_item.positions = position_list[i][j]
                 my_index.ted_talk_ii.dictionay[keys[i]] = [doc_freq[i], posting_item]
 
-        gamma_file_kg = open('gamma_code_kg', 'rb') 
+        gamma_file_kg = open('gamma_code_kg', 'rb')
         ted_talk_kg_dictionary = pickle.load(gamma_file_kg)
         my_index.ted_talk_ii.dictionay = ted_talk_kg_dictionary
         return my_index
 
     @classmethod
     def calculate_size_of_gamma(self,indexing):
-        G = GammaCode()	
+        G = GammaCode()
         gamma_list = []
         postings_list = []
         position_list = []
@@ -174,7 +174,7 @@ class CompressUtils:
         return gamma_size/8, size_without_compressing/8
     @classmethod
     def calculate_size_of_VBC(self,indexing):
-        VB = VariableByteCode()	
+        VB = VariableByteCode()
         VB_list = []
         postings_list = []
         position_list = []

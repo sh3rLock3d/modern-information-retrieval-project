@@ -63,36 +63,21 @@ class KGDictionary:
 
 
 class Indexing:
-    @classmethod
-    def reading_persian(cls):
-        import xmltodict
-        with open("phase1/phase1_data/Persian.xml") as xml_file:
-            data_dict = xmltodict.parse(xml_file.read())
-        result_wikis = []
-        for page in data_dict['mediawiki']['page']:
-            text = page['revision']['text']['#text']
-            title = page['title']
-            result_wikis.append({'id': int(page['id']), 'title': title, 'text': text})
-        return result_wikis
 
-    @classmethod
-    def reading_ted_talk(cls):
-        import pandas as pd
-        ted_talk_data = pd.read_csv('phase1/phase1_data/ted_talks.csv')
-        result_wikis = []
-        for index, doc in enumerate(ted_talk_data[['title', 'description']].values):
-            description = doc[1]
-            title = doc[0]
-            result_wikis.append({'id': index, 'title': title, 'description': description})
-        return result_wikis
-
-    def __init__(self):
+    def __init__(self, ted_data=None, persian_data=None):
+        # data
+        self.ted_data = ted_data
+        self.persian_data = persian_data
+        ## indexing
         self.ted_talk_ii = IIDictionary()
         self.ted_talk_doc_ids = set()
         self.ted_talk_kg = KGDictionary()
         self.persian_ii = IIDictionary()
         self.persian_doc_ids = set()
         self.persian_kg = KGDictionary()
+        ### phase 2
+        self.ted_talk_doc_class = dict()
+        self.persian_doc_class = dict()
 
     def get_ted_talk_dictionary(self):
         return self.ted_talk_ii.dictionary
@@ -153,11 +138,30 @@ class Indexing:
             del dict[stop]
 
     def update_index_from_files(self):
-        self.indexing_data(self.reading_ted_talk(), 'ted_talk')
-        self.indexing_data(self.reading_persian(), 'persian_wiki')
+        self.indexing_data(self.ted_data, 'ted_talk')
+        self.indexing_data(self.persian_data, 'persian_wiki')
         print('indexing done')
         stops1 = self.get_stop_words_set(self.ted_talk_ii.dictionary)
         stops2 = self.get_stop_words_set(self.persian_ii.dictionary)
-        print("stop words:\n", "\n".join(stops1 + stops2))
+        # print("stop words:\n", "\n".join(stops1 + stops2))
         self.delete_stops_from_dict(self.ted_talk_ii.dictionary, stops1)
         self.delete_stops_from_dict(self.persian_ii.dictionary, stops2)
+
+    def classify_documents(self, classifier, converter):
+        # TODO reducing data size for test
+        print("Creating Ted Talk Vectors ...")
+        ted_talk_vectors = converter.get_vector_space_documents_and_tokens(self.ted_data)
+        print("Creating Persian Vectors ...")
+        persian_vectors = converter.get_vector_space_documents_and_tokens(
+            self.persian_data)
+
+        print("classifying ted talk ... ")
+        for index, vector in enumerate(ted_talk_vectors):
+            ted_doc = self.ted_data[index]
+            class_type = classifier.predict(vector, ted_doc)
+            self.ted_talk_doc_class[ted_doc['id']] = class_type
+        print("classifying persian ...")
+        for index, vector in enumerate(persian_vectors):
+            persian_doc = self.persian_data[index]
+            class_type = classifier.predict(vector, persian_doc)
+            self.persian_doc_class[persian_doc['id']] = class_type

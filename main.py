@@ -1,3 +1,4 @@
+from data_reader import read_train_data, read_test_data, reading_persian, reading_ted_talk
 from phase1.compressing import CompressUtils
 from phase1.indexing import Indexing
 from phase1.prepare_text import DictionaryProcess
@@ -7,33 +8,9 @@ from phase2.classification.kNN import KNN
 from phase2.convertDataToVectorSpace import VectorSpaceConverter
 
 
-def read_train_data():
-    import pandas as pd
-    ted_talk_data = pd.read_csv('phase2_data/train.csv')
-    result_wikis = []
-    for index, doc in enumerate(ted_talk_data[['title', 'description', 'views']].values):
-        title = doc[0]
-        description = doc[1]
-        view = doc[2]
-        result_wikis.append({'id': index, 'title': title, 'description': description, 'views': view})
-    return result_wikis
-
-
-def read_test_data():
-    import pandas as pd
-    ted_talk_data = pd.read_csv('phase2_data/test.csv')
-    result_wikis = []
-    for index, doc in enumerate(ted_talk_data[['title', 'description', 'views']].values):
-        title = doc[0]
-        description = doc[1]
-        view = doc[2]
-        result_wikis.append({'id': index, 'title': title, 'description': description, 'views': view})
-    return result_wikis
-
-
 def get_classifier():
     train_data = read_train_data()
-    validation_data = train_data[:int(len(train_data) / 20)]
+    validation_data = train_data[:int(len(train_data) / 10)]
     test_data = read_test_data()
     ### creating vector space by tokenizing documents
     converter = VectorSpaceConverter(validation_data + test_data)
@@ -53,16 +30,18 @@ def get_classifier():
     print("K = 1, Accuracy: ", nn_1.get_accuracy(vector_space_testing, test_data))
     print("K = 5, Accuracy: ", nn_5.get_accuracy(vector_space_testing, test_data))
     print("K = 9, Accuracy: ", nn_9.get_accuracy(vector_space_testing, test_data))
-
-    return nn_9
+    # TODO we may return the best classifier, for now and just for test i returned knn
+    # for classifying phase 1 data we should pass converter
+    return nn_9, converter
 
 
 def main():
     """ create and train classifier"""
-    knn_classifier = get_classifier()
+    knn_classifier, converter = get_classifier()
     """ reading and indexing files """
-    my_index = Indexing()
+    my_index = Indexing(reading_ted_talk(), reading_persian())
     my_index.update_index_from_files()
+    my_index.classify_documents(knn_classifier, converter)
 
     """ compressing and saving index object to a file """
     # my_index.compress_with_variable_code()
