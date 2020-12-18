@@ -1,4 +1,4 @@
-from .compressing import CompressUtils
+from phase1.compressing import CompressUtils
 from phase1.indexing import Indexing
 from phase1.prepare_text import DictionaryProcess
 from phase1.search_and_retrieval import SearchAndRetrieval
@@ -19,10 +19,10 @@ def main():
     search_and_retrieval = SearchAndRetrieval(my_index)
 
     """ user interface """
-    user_interface(my_index, search_and_retrieval,check_query)
+    user_interface(my_index, search_and_retrieval, check_query)
 
 
-def user_interface(my_indexing, search,check_query):
+def user_interface(my_indexing, search, check_query):
     def showing_posting_list_of_a_word(word, sub_section):
         if DictionaryProcess.check_persian(word[0]):
             postings = my_indexing.persian_ii.dictionary.get(word + "-" + sub_section, [0, []])
@@ -81,16 +81,16 @@ def user_interface(my_indexing, search,check_query):
             if command == '3':
                 l = input('1: storage variable bytes\n2: storage gamma code\n3:store in file\n')
                 if l == '1':
-                    VB_size,size_without_compressing = CompressUtils.calculate_size_of_VBC(my_indexing)
+                    VB_size, size_without_compressing = CompressUtils.calculate_size_of_VBC(my_indexing)
                     print("size without compressing: " + str(size_without_compressing))
                     print("size after applying variable byye code: " + str(VB_size))
                 if l == '2':
-                    gamma_size,size_without_compressing = CompressUtils.calculate_size_of_gamma(my_indexing)
+                    gamma_size, size_without_compressing = CompressUtils.calculate_size_of_gamma(my_indexing)
                     print("size without compressing: " + str(size_without_compressing))
                     print("size after applying gamma code: " + str(gamma_size))
-                    
+
                 if l == '3':
-                    #CompressUtils.compress_with_gamma(my_indexing)
+                    # CompressUtils.compress_with_gamma(my_indexing)
                     # token_freq = []
                     # for key in my_indexing.ted_talk_ii.dictionary.keys():
                     # token_freq.append(my_indexing.ted_talk_ii.dictionary.get(key)[0])
@@ -103,13 +103,13 @@ def user_interface(my_indexing, search,check_query):
                     res = check_query.spell_corrector(input('query: '), input('subsection: '))
                     print(res)
                 if l == '2':
-                    print(check_query.jaccard_similarity(input("first word: ") , input("second word: ")))
+                    print(check_query.jaccard_similarity(input("first word: "), input("second word: ")))
                     pass
                 if l == '3':
                     selected_word = input('selected_word: ')
                     word = input('word: ')
                     edit_distance_value = check_query.editDistance(selected_word, word, len(selected_word),
-                                                                             len(word))
+                                                                   len(word))
                     print(edit_distance_value)
             if command == '5':
                 pass

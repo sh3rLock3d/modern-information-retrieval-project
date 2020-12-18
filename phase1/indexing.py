@@ -1,6 +1,5 @@
 # inverted index dictionary
-from .compressing import CompressUtils
-from .prepare_text import DictionaryProcess
+from phase1.prepare_text import DictionaryProcess
 
 
 class IIDictionary:
@@ -67,7 +66,7 @@ class Indexing:
     @classmethod
     def reading_persian(cls):
         import xmltodict
-        with open("phase1_data/Persian.xml") as xml_file:
+        with open("phase1/phase1_data/Persian.xml") as xml_file:
             data_dict = xmltodict.parse(xml_file.read())
         result_wikis = []
         for page in data_dict['mediawiki']['page']:
@@ -79,7 +78,7 @@ class Indexing:
     @classmethod
     def reading_ted_talk(cls):
         import pandas as pd
-        ted_talk_data = pd.read_csv('phase1_data/ted_talks.csv')
+        ted_talk_data = pd.read_csv('phase1/phase1_data/ted_talks.csv')
         result_wikis = []
         for index, doc in enumerate(ted_talk_data[['title', 'description']].values):
             description = doc[1]
@@ -162,17 +161,3 @@ class Indexing:
         print("stop words:\n", "\n".join(stops1 + stops2))
         self.delete_stops_from_dict(self.ted_talk_ii.dictionary, stops1)
         self.delete_stops_from_dict(self.persian_ii.dictionary, stops2)
-
-    def update_index_with_decoding_from_gamma_file(self):
-        indexing = CompressUtils.decode_with_gamma()
-        self.persian_ii = indexing.persian_ii
-        self.persian_kg = indexing.persian_kg
-        self.ted_talk_ii = indexing.ted_talk_ii
-        self.ted_talk_kg = indexing.ted_talk_kg
-
-    def update_index_with_decoding_from_variable_file(self):
-        indexing = CompressUtils.decode_with_variable_code()
-        self.persian_ii = indexing.persian_ii
-        self.persian_kg = indexing.persian_kg
-        self.ted_talk_ii = indexing.ted_talk_ii
-        self.ted_talk_kg = indexing.ted_talk_kg

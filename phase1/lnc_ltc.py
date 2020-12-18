@@ -1,5 +1,5 @@
-from indexing import Indexing
-from prepare_text import DictionaryProcess
+from phase1.indexing import Indexing
+from phase1.prepare_text import DictionaryProcess
 
 
 class LNC_LTC:

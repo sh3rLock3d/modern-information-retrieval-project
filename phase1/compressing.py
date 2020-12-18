@@ -1,4 +1,4 @@
-from indexing import Indexing
+from phase1.indexing import Indexing
 from functools import reduce
 import math
 import pickle
@@ -203,6 +203,21 @@ class CompressUtils:
         for posting in postings_list:
              size_without_compressing += len(posting) * 32
         return VB_size/8, size_without_compressing/8
+    #
+    # def get_index_with_decoding_from_gamma_file(self,keys,doc_freq):
+    #
+    #     indexing = self.decode_with_gamma(keys,doc_freq)
+    #     self.persian_ii = indexing.persian_ii
+    #     self.persian_kg = indexing.persian_kg
+    #     self.ted_talk_ii = indexing.ted_talk_ii
+    #     self.ted_talk_kg = indexing.ted_talk_kg
+    #
+    # def update_index_with_decoding_from_variable_file(self):
+    #     indexing = self.decode_with_variable_code()
+    #     self.persian_ii = indexing.persian_ii
+    #     self.persian_kg = indexing.persian_kg
+    #     self.ted_talk_ii = indexing.ted_talk_ii
+    #     self.ted_talk_kg = indexing.ted_talk_kg
 
 
     @classmethod

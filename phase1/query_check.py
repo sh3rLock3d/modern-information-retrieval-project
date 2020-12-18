@@ -1,5 +1,5 @@
-from indexing import KGDictionary
-from prepare_text import DictionaryProcess
+from phase1.indexing import KGDictionary
+from phase1.prepare_text import DictionaryProcess
 
 
 class query_check:
