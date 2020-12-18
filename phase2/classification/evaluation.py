@@ -22,6 +22,7 @@ def main():
     print('\t accuracy:', correct / total)
     print('\t precision:', true_positive / correct)
     print('\t recall:', true_positive / len(trues))
+    print('\t f-score:', f_score(true_positive / correct, true_positive / len(trues)))
 
     print('K-NN:')
     validation_data = train_data[:int(len(train_data) / 20)]
@@ -36,7 +37,7 @@ def main():
         correct, total = 0, len(test_data)
         true_positive = 0
         for row in test_data:
-            view = knn.predict(vector_space_testing, row) # todo predict with row = {id, description, title, views}
+            view = knn.predict(vector_space_testing, row)  # todo predict with row = {id, description, title, views}
             if view == row['views']:
                 correct += 1
             if view == 1 and row['views'] == 1:
@@ -46,10 +47,41 @@ def main():
         print('\t accuracy:', correct / total)
         print('\t precision:', true_positive / correct)
         print('\t recall:', true_positive / len(trues))
+        print('\t f-score:', f_score(true_positive / correct, true_positive / len(trues)))
 
     print('SVM:')
+    for c in [0.5, 1, 1.5, 2]:
+        # todo train SVM model with given c
+        correct, total = 0, len(test_data)
+        true_positive = 0
+        for row in test_data:
+            view = 1  # todo predict with row = {id, description, title, views}
+            if view == row['views']:
+                correct += 1
+            if view == 1 and row['views'] == 1:
+                true_positive += 1
+        print('\t svm with c =', k)
+        print('\t accuracy:', correct / total)
+        print('\t precision:', true_positive / correct)
+        print('\t recall:', true_positive / len(trues))
+        print('\t f-score:', f_score(true_positive / correct, true_positive / len(trues)))
 
     print('Random Forest:')
+    # todo train Random Forest model
+    correct, total = 0, len(test_data)
+    true_positive = 0
+    for row in test_data:
+        view = 1  # todo predict with row = {id, description, title, views}
+        if view == row['views']:
+            correct += 1
+        if view == 1 and row['views'] == 1:
+            true_positive += 1
+
+    print('\t accuracy:', correct / total)
+    print('\t precision:', true_positive / correct)
+    print('\t recall:', true_positive / len(trues))
+    print('\t f-score:', f_score(true_positive / correct, true_positive / len(trues)))
+
 
 def find_trues(data):  # view = 1
     trues = []
@@ -57,6 +89,12 @@ def find_trues(data):  # view = 1
         if row['views'] == 1:
             trues.append(row['id'])
     return trues
+
+
+def f_score(p, r):
+    a = 1
+    b = 0.5
+    return (1 + b ** 2) * (p * r) / ((p * (b ** 2)) + r)
 
 
 if __name__ == '__main__':
