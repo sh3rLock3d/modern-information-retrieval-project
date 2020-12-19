@@ -4,7 +4,7 @@ class KNN:
         self.documents = documents
         self.training_data_vector = training_data_vector
 
-    def predict(self, doc_vector, doc):
+    def predict(self, doc_vector):
         distance_list = []
         for index, train_vector in enumerate(self.training_data_vector):
             distance = self.distance(train_vector, doc_vector)

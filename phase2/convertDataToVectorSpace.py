@@ -41,7 +41,7 @@ class VectorSpaceConverter:
                         index = -1
                     if index != -1:
                         doc_tokens_count[main_token] = doc_tokens_count.get(main_token, 0) + 1
-                        doc_vector[index] = math.log(len(self.json_document) / len(self.tokens[main_token]))
+                        doc_vector[index] = math.log(len(self.json_document) / (len(self.tokens[main_token])+1))
                 """ tf part """
                 for token in dictionary_process:
                     main_token = token + "-" + subSection

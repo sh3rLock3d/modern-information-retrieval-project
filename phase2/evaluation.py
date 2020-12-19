@@ -1,10 +1,12 @@
-from main import read_test_data, read_train_data
-from phase2 import naiveBayes
+from data_reader import read_test_data, read_train_data
+from phase2.classification import naiveBayes
+from phase2.classification.RandomForest import RandomForest
+from phase2.classification.SVM import SVM
 from phase2.classification.kNN import KNN
 from phase2.convertDataToVectorSpace import VectorSpaceConverter
 
 
-def main():
+def evaluate_classifiers():
     train_data = read_train_data()
     test_data = read_test_data()
     trues = find_trues(test_data)
@@ -36,8 +38,9 @@ def main():
         # print("K = 1, Accuracy: ", nn.get_accuracy(vector_space_testing, test_data))
         correct, total = 0, len(test_data)
         true_positive = 0
-        for row in test_data:
-            view = knn.predict(vector_space_testing, row)  # todo predict with row = {id, description, title, views}
+        for index, row in enumerate(test_data):
+            view = knn.predict(
+                vector_space_testing[index])
             if view == row['views']:
                 correct += 1
             if view == 1 and row['views'] == 1:
@@ -51,11 +54,12 @@ def main():
 
     print('SVM:')
     for c in [0.5, 1, 1.5, 2]:
-        # todo train SVM model with given c
+        svm = SVM(converter)
+        svm.train(c, train_data)
         correct, total = 0, len(test_data)
         true_positive = 0
-        for row in test_data:
-            view = 1  # todo predict with row = {id, description, title, views}
+        for index, row in enumerate(test_data):
+            view = svm.predict(vector_space_testing[index])
             if view == row['views']:
                 correct += 1
             if view == 1 and row['views'] == 1:
@@ -67,11 +71,12 @@ def main():
         print('\t f-score:', f_score(true_positive / correct, true_positive / len(trues)))
 
     print('Random Forest:')
-    # todo train Random Forest model
+    random_forest = RandomForest(converter)
+    random_forest.train(train_data)
     correct, total = 0, len(test_data)
     true_positive = 0
-    for row in test_data:
-        view = 1  # todo predict with row = {id, description, title, views}
+    for index, row in enumerate(test_data):
+        view = random_forest.predict(vector_space_testing[index])
         if view == row['views']:
             correct += 1
         if view == 1 and row['views'] == 1:
@@ -95,7 +100,3 @@ def f_score(p, r):
     a = 1
     b = 0.5
     return (1 + b ** 2) * (p * r) / ((p * (b ** 2)) + r)
-
-
-if __name__ == '__main__':
-    main()

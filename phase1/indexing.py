@@ -158,10 +158,10 @@ class Indexing:
         print("classifying ted talk ... ")
         for index, vector in enumerate(ted_talk_vectors):
             ted_doc = self.ted_data[index]
-            class_type = classifier.predict(vector, ted_doc)
+            class_type = classifier.predict(vector)
             self.ted_talk_doc_class[ted_doc['id']] = class_type
         print("classifying persian ...")
         for index, vector in enumerate(persian_vectors):
             persian_doc = self.persian_data[index]
-            class_type = classifier.predict(vector, persian_doc)
+            class_type = classifier.predict(vector)
             self.persian_doc_class[persian_doc['id']] = class_type

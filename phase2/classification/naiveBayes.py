@@ -60,13 +60,13 @@ def naive_bayes(data):
 
 
 def train():
-    train_data = read_csv("phase2_data/train.csv")
+    train_data = read_csv("phase2/phase2_data/train.csv")
     global des_table, title_table, p_view
     des_table, title_table, p_view = naive_bayes(train_data)
 
 
 def test():
-    test_data = read_csv('phase2_data/test.csv')
+    test_data = read_csv('phase2/phase2_data/test.csv')
     correct = 0
     total = 0
     for index, row in test_data.iterrows():

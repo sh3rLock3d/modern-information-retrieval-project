@@ -4,8 +4,11 @@ from phase1.indexing import Indexing
 from phase1.prepare_text import DictionaryProcess
 from phase1.query_check import query_check
 from phase1.search_and_retrieval import SearchAndRetrieval
+from phase2.classification.RandomForest import RandomForest
+from phase2.classification.SVM import SVM
 from phase2.classification.kNN import KNN
 from phase2.convertDataToVectorSpace import VectorSpaceConverter
+from phase2.evaluation import evaluate_classifiers
 
 
 def get_classifier():
@@ -22,26 +25,38 @@ def get_classifier():
     vector_space_testing = converter.get_vector_space_documents_and_tokens(test_data)
 
     """ knn alg """
-    nn_1 = KNN(1, validation_data, vector_space_validation)
-    nn_5 = KNN(5, validation_data, vector_space_validation)
+    # nn_1 = KNN(1, validation_data, vector_space_validation)
+    # nn_5 = KNN(5, validation_data, vector_space_validation)
     nn_9 = KNN(9, validation_data, vector_space_validation)
 
     """ evaluation """
-    print("K = 1, Accuracy: ", nn_1.get_accuracy(vector_space_testing, test_data))
-    print("K = 5, Accuracy: ", nn_5.get_accuracy(vector_space_testing, test_data))
-    print("K = 9, Accuracy: ", nn_9.get_accuracy(vector_space_testing, test_data))
+    # print("K = 1, Accuracy: ", nn_1.get_accuracy(vector_space_testing, test_data))
+    # print("K = 5, Accuracy: ", nn_5.get_accuracy(vector_space_testing, test_data))
+    # print("K = 9, Accuracy: ", nn_9.get_accuracy(vector_space_testing, test_data))
     # TODO we may return the best classifier, for now and just for test i returned knn
     # for classifying phase 1 data we should pass converter
-    return nn_9, converter
+
+    random_forest = RandomForest(converter)
+    random_forest.train(train_data)
+    """ evaluation """
+    # print("Random Forest Accuracy: ", random_forest.get_accuracy(vector_space_testing, test_data))
+
+    svm = SVM(converter)
+    # svm.train(0.5, train_data)
+    """ evaluation """
+    # print("SVM Accuracy: ", svm.get_accuracy(vector_space_testing, test_data))
+
+    return nn_9, random_forest, svm, converter
 
 
 def main():
+    evaluate_classifiers()
     """ create and train classifier"""
-    knn_classifier, converter = get_classifier()
+    knn_classifier, random_forest, svm, converter = get_classifier()
     """ reading and indexing files """
     my_index = Indexing(reading_ted_talk(), reading_persian())
     my_index.update_index_from_files()
-    my_index.classify_documents(knn_classifier, converter)
+    my_index.classify_documents(random_forest, converter)
 
     """ compressing and saving index object to a file """
     # my_index.compress_with_variable_code()
