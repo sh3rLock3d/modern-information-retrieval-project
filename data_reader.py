@@ -24,6 +24,22 @@ def read_test_data():
     return result_wikis
 
 
+def read_data():
+    import pandas as pd
+    ted_talk_data_1 = pd.read_csv('phase2/phase2_data/train.csv')
+    ted_talk_data_2 = pd.read_csv('phase2/phase2_data/test.csv')
+    dfs = []
+    dfs.extend([ted_talk_data_1, ted_talk_data_2])
+    ted_talk_data = pd.concat(dfs)
+    result_wikis = []
+    for index, doc in enumerate(ted_talk_data[['title', 'description', 'views']].values):
+        title = doc[0]
+        description = doc[1]
+        view = doc[2]
+        result_wikis.append({'id': index, 'title': title, 'description': description, 'views': view})
+    return result_wikis
+
+
 def reading_persian():
     import xmltodict
     with open("phase1/phase1_data/Persian.xml") as xml_file:
