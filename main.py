@@ -50,7 +50,6 @@ def get_classifier():
 
 
 def main():
-    evaluate_classifiers()
     """ create and train classifier"""
     knn_classifier, random_forest, svm, converter = get_classifier()
     """ reading and indexing files """
@@ -91,10 +90,14 @@ def user_interface(my_indexing, search, check_query):
 
     print('phase 1 of MIR project')
     while True:
-        print("if you wanna search type 's'\n"
-              "if you wanna test parts of project type 't'\n"
+        print("if you wanna evaluate classifiers type v\n"
+              + "if you wanna search type 's'\n" +
+              "if you wanna test parts of project type 't'\n" +
               "if you wanna exit type e")
+
         command = input()
+        if command == "v":
+            evaluate_classifiers()
         if command == 'e':
             break
         elif command == 't':

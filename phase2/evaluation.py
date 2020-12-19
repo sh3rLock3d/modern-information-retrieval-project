@@ -64,7 +64,7 @@ def evaluate_classifiers():
                 correct += 1
             if view == 1 and row['views'] == 1:
                 true_positive += 1
-        print('\t svm with c =', k)
+        print('\t svm with c =', c)
         print('\t accuracy:', correct / total)
         print('\t precision:', true_positive / correct)
         print('\t recall:', true_positive / len(trues))
