@@ -10,7 +10,7 @@ def evaluate_classifiers():
     train_data = read_train_data()
     test_data = read_test_data()
     trues = find_trues(test_data)
-    print('Naive Bayes:')
+    print('Naive Bayes :')
     naiveBayes.train()
     correct, total = 0, len(test_data)
     true_positive = 0
