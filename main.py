@@ -70,7 +70,6 @@ def main():
 
 
 def user_interface(my_indexing, search, check_query):
-    evaluate_classifiers()
 
     def showing_posting_list_of_a_word(word, sub_section):
         if DictionaryProcess.check_persian(word[0]):
