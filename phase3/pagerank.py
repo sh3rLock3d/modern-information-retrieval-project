@@ -1,8 +1,7 @@
 # pip install fast-pagerank
 import numpy as np
-from scipy import sparse
 from fast_pagerank import pagerank
-from fast_pagerank import pagerank_power
+from scipy import sparse
 
 edges = list()
 nodes_name = dict()
@@ -32,6 +31,25 @@ def find_highest_rank_articles(n, alpha=0.85):
     return top_n
 
 
+def load_data():
+    import json
+    f = open("fetched_data.txt", "r")
+    res = json.loads(f.readlines()[0])
+    return res
+
+
+if __name__ == '__main__':
+    data = load_data()
+    for key in data.keys():
+        for ref in data[key]['references']:
+            add_link(key, ref)
+
+    pr = find_pagerank()
+    for i in pr: print(i)
+    print("-----")
+    top10 = find_highest_rank_articles(10)
+    for i in top10:
+        print(i)
 """
 if __name__ == '__main__':
     add_link('a', 'b')
