@@ -49,18 +49,14 @@ def fetch_article_data_with_link(link, browser):
     b = wait_until_load(browser)
     # ID
     id = link.split("/")[-1]
-    # print("id:", id, end="\t")
     # Title
     title = execute_until_done(lambda: browser.find_element_by_class_name("name").text)
-    # print("title:", title, end="\t")
 
     # Abstract
     abstract = execute_until_done(lambda: browser.find_elements_by_tag_name("p")[2].text)
-    # print("abstract:", abstract, end="\t")
 
     # Year
     year = execute_until_done(lambda: browser.find_element_by_class_name("year").text)
-    # print("year:", year, end="\t")
 
     # Authors
     all_authors_tag = browser.find_elements_by_xpath("//*[@data-appinsights-key.bind='author.id']")
@@ -68,28 +64,23 @@ def fetch_article_data_with_link(link, browser):
     for auth in all_authors_tag:
         if auth.get_attribute("href").split("paperId=")[-1] == id:
             authors.append(auth.text)
-    # print("authors:", authors, end="\t")
 
     # References
     ref_count = int(execute_until_done(lambda: browser.find_element_by_class_name("count").text))
-    # print("ref_count:", ref_count, end="\t")
     references_ids = []
 
     if ref_count != 0:
         temp = execute_until_done(lambda: browser.find_element_by_class_name("primary_paper"))
-        # print("temp:", ":)", end="\t")
 
         all_references_tag = browser.find_elements_by_class_name("primary_paper")
         for ref in all_references_tag:
             try:
-                # print("rererere", end="")
                 ref_id = ref.find_element_by_xpath(".//*").get_attribute("href").split("/")[-2]
                 references_ids.append(ref_id)
             except:
                 pass
             if len(references_ids) >= 10:
                 break
-    # print("references_ids:", references_ids, end="\t")
 
     return {
         "id": id,
@@ -130,6 +121,7 @@ def open_browser_crawler(index):
 
 if __name__ == '__main__':
     n = 5000
+    n = int(input("Enter Article's Count to be fetched:"))
     q = deque(['2981549002', '3105081694', '2950893734'], maxlen=3500)
     fetched_articles = {}
     b_count = 3
