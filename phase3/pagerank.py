@@ -12,14 +12,21 @@ def add_link(from_node, to_node):
         if name not in nodes_name.keys():
             nodes_name[name] = len(nodes_name)
     f, t = nodes_name[from_node], nodes_name[to_node]
-    edge_weight[(f,t)] = edge_weight.get((f,t), 0) + 1
-    edges.append([f, t])
+    if (f,t) in edge_weight.keys():
+        edge_weight[(f, t)] = edge_weight[(f, t)] + 1
+    else:
+        edges.append([f, t])
+        edge_weight[(f, t)] = 1
+
+
 
 
 def find_pagerank(alpha=0.85):
     n = len(nodes_name)
     A = np.array(edges)
     weights = [edge_weight[(A[i][0], A[i][1])] for i in range(len(edges))]
+    print(A)
+    print(weights)
     G = sparse.csr_matrix((weights, (A[:, 0], A[:, 1])), shape=(n, n))
     pr = pagerank(G, p=alpha)
     return [(node, pr[node_num]) for node, node_num in nodes_name.items()]
@@ -53,6 +60,7 @@ if __name__ == '__main__':
         print(i)
 """
 if __name__ == '__main__':
+    add_link('a', 'b')
     add_link('a', 'b')
     add_link('a', 'c')
     add_link('b', 'c')
